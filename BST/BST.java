@@ -14,7 +14,7 @@ public class BST<T extends Comparable<T>> {
         if (element != null) {
             result = searchRecursivoBst(element, root);
         }
-         
+
         return result;
     }
 
@@ -62,30 +62,23 @@ public class BST<T extends Comparable<T>> {
     }
 
     
-    
-    
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public void remove(T key) {
         throw new UnsupportedOperationException("Escolha removeRecursivo");
+    }
+
+    private void removeRecursivoBst(T element, BtNode<T> node ) {
+         node = searchRecursivoBst(element, node); //Já cheguei no nó que eu quero
+         if (node != null) {
+            if (node.getLeft() == null && node.getRight() == null) { //Nó folha
+                node = null;
+            } else if (node.getLeft() != null) { //Nó não folha
+                if (node.getRight() == null) { //Nó folha, apenas com a da esquerda
+                    node.getParent().setRight(node.getLeft()); //Fiz com que o pai do meu atual, apontasse para o filho do meu atual
+                } else { //Filho em ambos
+
+                }
+            } 
+         }
     }
     
     
