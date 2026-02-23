@@ -11,33 +11,78 @@ public class BST<T extends Comparable<T>> {
 
     public BtNode<T> search(T element) {
         BtNode<T> result = null;
-        if (element != null && root != null) {
+        if (element != null) {
             result = searchRecursivoBst(element, root);
         }
+         
         return result;
     }
 
     
-    public BtNode<T> searchRecursivoBst(T element, BtNode<T> node) {
-        BtNode<T> result = null; 
+    private BtNode<T> searchRecursivoBst(T element, BtNode<T> node) {
+        BtNode<T> result = null;
         if (element != null && node != null) {
-            int comparacao = element.compareTo(node.getData());
-
-            if (comparacao == 0) { //Achei o elemento
-                result = node;
-            } else if (comparacao > 0) {                                              //element > node.data, vou pra direita
-                    result = searchRecursivoBst(element, node.getRight());    
-            } else {                                                                //Element > node.getData, vou pra esquerda
-                    result = searchRecursivoBst(element, node.getLeft());    
+            int comp = element.compareTo(node.getData()); //compare
+            if (comp == 0) {
+                result = node; //Find
+            } else if (comp > 0) {
+                 result = searchRecursivoBst(element, node.getRight());
+            } else {
+                result = searchRecursivoBst(element, node.getLeft());
             }
         }
-        
         return result;
     }
 
     public void insert(T value) {
-        throw new UnsupportedOperationException("Escolha insertRecursivo");
+        if (root == null) {
+            root = new BtNode<>(value);
+        } else {
+            insertRecursivoBst(value, root);
+        }
     }
+
+
+    private void insertRecursivoBst(T element, BtNode<T> node) {
+        int comp = element.compareTo(node.getData());
+        if (comp > 0) { //Element > node.data, direita
+            if (node.getRight() == null) {
+                node.setRight(new BtNode<>(element)); //Adiciono o nó a direita
+            } else {
+                insertRecursivoBst(element, node.getRight()); //Continuo percorrendo a direita
+            }
+        } else if (comp < 0) { //Element < node.data, esquerda
+            if (node.getLeft() == null) {
+                node.setLeft(new BtNode<>(element)); //Adiciono o nó a esqueda
+            } else {
+                insertRecursivoBst(element, node.getLeft());
+            }
+        } 
+
+    }
+
+    
+    
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     public void remove(T key) {
         throw new UnsupportedOperationException("Escolha removeRecursivo");
