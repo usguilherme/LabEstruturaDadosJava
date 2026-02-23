@@ -93,41 +93,4 @@ public class BST<T extends Comparable<T>> {
         throw new UnsupportedOperationException("Escolha sizeRecursivo");
     }
 
-    /* ================= MÉTODOS RECURSIVOS ================= */
-
-    private boolean isEmptyRecursivo() {
-        throw new UnsupportedOperationException("Unimplemented method 'isEmptyRecursivo'");
-    }
-
-    private int heightRecursivo(BtNode<T> node) {
-        throw new UnsupportedOperationException("Unimplemented method 'heightRecursivo'");
-    }
-
-    private BtNode<T> searchRecursivo(BtNode<T> node, T element) {
-        throw new UnsupportedOperationException("Unimplemented method 'searchRecursivo'");
-    }
-
-    private BtNode<T> insertRecursivo(BtNode<T> node, T value) {
-        throw new UnsupportedOperationException("Unimplemented method 'insertRecursivo'");
-    }
-
-    private BtNode<T> removeRecursivo(BtNode<T> node, T key) {
-        throw new UnsupportedOperationException("Unimplemented method 'removeRecursivo'");
-    }
-
-    private void preOrderRecursivo(BtNode<T> node) {
-        throw new UnsupportedOperationException("Unimplemented method 'preOrderRecursivo'");
-    }
-
-    private void orderRecursivo(BtNode<T> node) {
-        throw new UnsupportedOperationException("Unimplemented method 'orderRecursivo'");
-    }
-
-    private void postOrderRecursivo(BtNode<T> node) {
-        throw new UnsupportedOperationException("Unimplemented method 'postOrderRecursivo'");
-    }
-
-    private int sizeRecursivo(BtNode<T> node) {
-        throw new UnsupportedOperationException("Unimplemented method 'sizeRecursivo'");
-    }
 }
