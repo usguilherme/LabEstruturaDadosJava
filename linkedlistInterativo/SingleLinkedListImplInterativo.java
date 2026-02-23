@@ -101,14 +101,27 @@ public class SingleLinkedListImplInterativo<T> implements LinkedList2<T> {
 
     public void insertLastIterativo(T element, SingleLinkedListImplInterativo<T> head) {
         SingleLinkedListImplInterativo<T> aux = head;
-        while (aux.getNext() != null && aux.getNext().getData() != null) {
+        if (aux != null) {
+            while (aux.getNext() != null && aux.getNext().getData() != null) {
+                aux = aux.getNext();
+            }
+            SingleLinkedListImplInterativo<T> novo = new SingleLinkedListImplInterativo<>();
+            novo.setData(element);
+            novo.setNext(aux.getNext());
+            aux.setNext(novo); 
+        }
+    }
+
+    public String imprimir(SingleLinkedListImplInterativo<Integer> head) {
+        String result = "";
+        SingleLinkedListImplInterativo<Integer> aux = head.getNext();
+        while (aux != null && aux.getData() != null) {
+            result = result + aux.getData().toString() + " ";
             aux = aux.getNext();
         }
-        SingleLinkedListImplInterativo<T> novo = new SingleLinkedListImplInterativo<>();
-        novo.setData(element);
-        novo.setNext(aux.getNext());
-        aux.setNext(novo);
+        return result;
     }
+
 
     @Override
     public void insertPosition(int position, T element) {
