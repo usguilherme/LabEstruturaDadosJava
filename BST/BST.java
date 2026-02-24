@@ -234,24 +234,75 @@ public class BST<T extends Comparable<T>> {
         }
     }
 
-    public int height() {
-        throw new UnsupportedOperationException("Escolha heightRecursivo");
+
+    public List<T> preOrder() {
+        List<T> array = new ArrayList<>();
+        preOrderRecursivoBst(root, array);
+        return array;
     }
 
-    public T[] preOrder() {
-        throw new UnsupportedOperationException("Escolha preOrderRecursivo");
+    private void preOrderRecursivoBst(BtNode<T> node, List<T> array) {
+        if (!node.isNil()) {
+            array.add(node.getData()); //Adiciona
+            preOrderRecursivoBst(node.getLeft(), array); //Vou pra esquerda 
+            preOrderRecursivoBst(node.getRight(), array); //Vou pra direita
+        }
+
+    }
+    
+    public List<T> order() {
+        List<T> array = new ArrayList<>();
+        orderRecursivoBst(root, array);
+        return array;
     }
 
-    public T[] order() {
-        throw new UnsupportedOperationException("Escolha orderRecursivo");
+    public void orderRecursivoBst(BtNode<T> node, List<T> array) {
+        if (!node.isNil()) {
+            orderRecursivoBst(node.getLeft(), array); //Esquerda
+            array.add(node.getData()); //Adiciono nó atual
+            orderRecursivoBst(node.getRight(), array); //Direita
+        }
     }
 
-    public T[] postOrder() {
-        throw new UnsupportedOperationException("Escolha postOrderRecursivo");
+    public List<T> postOrder() {
+        List<T> array = new ArrayList<>();
+        postOrderRecursivoBst(root, array);
+        return array;
+    }
+
+
+    public void postOrderRecursivoBst(BtNode<T> node, List<T> array) {
+        if (!node.isNil()) {
+            postOrderRecursivoBst(node.getLeft(), array);
+            postOrderRecursivoBst(node.getRight(), array);
+            array.add(node.getData());
+        }
     }
 
     public int size() {
         throw new UnsupportedOperationException("Escolha sizeRecursivo");
+    }
+
+    public int sizeRecursivoBst(BtNode<T> node) {
+        int result = 0;
+        if (!node.isNil()) {
+            result = 1 + sizeRecursivoBst(node.getLeft()) + sizeRecursivoBst(node.getRight());
+        }
+        return result;
+    }
+
+    public int height() {
+        return heightRecursivoBst(root);
+    }
+    
+    private int heightRecursivoBst(BtNode<T> node) {
+        int altura = -1;
+        if (!node.isNil()) {
+            int alturaEsquerda = heightRecursivoBst(node.getLeft());
+            int alturaDireita = heightRecursivoBst(node.getRight());
+            altura = 1 + Math.max(alturaEsquerda, alturaDireita);
+        }
+        return altura; 
     }
 
 }

@@ -16,11 +16,11 @@ public interface Bt<T> {
 
     void remove(T key);
 
-    T[] preOrder();
+    List<T> preOrder();
 
-    T[] order();      // in-order
+    List<T> order();      // in-order
 
-    T[] postOrder();
+    List<T> postOrder();
 
     int size();
 
