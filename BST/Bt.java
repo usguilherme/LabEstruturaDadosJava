@@ -1,5 +1,9 @@
 package BST;
 
+import java.util.List;
+
+import javax.sound.sampled.Line;
+
 public interface Bt<T> {
 
     BtNode<T> getRoot();
@@ -26,7 +30,7 @@ public interface Bt<T> {
 
     int level(T element); // Retorna o nível de um elemento na árvore
 
-    T[] path(T element); // Retorna o caminho da raiz até o elemento
+    List<T> path(T element); // Retorna o caminho da raiz até o elemento
 
     void mirror(); // Espelha (inverte) a árvore
 }

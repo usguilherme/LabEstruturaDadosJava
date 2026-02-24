@@ -1,5 +1,8 @@
 package BST;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class BST<T extends Comparable<T>> {
 
     private BtNode<T> root;
@@ -143,22 +146,74 @@ public class BST<T extends Comparable<T>> {
         throw new UnsupportedOperationException("Escolha sizeRecursivo");
     }
 
-    // 🔥 NOVOS MÉTODOS (sem implementação)
-
     public boolean equals(BST<T> other) {
-        throw new UnsupportedOperationException("Método equals não implementado");
+        boolean result = false;
+        if (other != null) {
+            result = equalsRecursivoBst(this.root, other.root);
+        }  
+        return result;
+    }
+
+    private boolean equalsRecursivoBst(BtNode<T> node, BtNode<T> node1) {
+        boolean result = true;
+        if (!node.isNil() && !node1.isNil()) {
+            
+            if (!node.getData().equals(node1.getData())) {
+                result = false;
+            }
+            if (result) {
+                result = equalsRecursivoBst(node.getLeft(), node1.getLeft()) &&
+                equalsRecursivoBst(node.getRight(), node1.getRight());
+            } 
+        }
+
+        return result;
+    }
+
+
+    public List<T> path(T element) {
+        List<T> result = new ArrayList<>();
+        if (element != null) {
+            result = path(element, result, root);
+        }
+        return result;
+    }
+
+    private List<T> path(T element, List<T> array, BtNode<T> node) { 
+        if (!node.isNil()) {
+            int comp = element.compareTo(node.getData());
+            if (comp > 0) { //Element > node.data
+                array.add(node.getData());
+                path(element, array, node.getRight());
+            } else if (comp < 0) { //Element < node.data
+                array.add(node.getData());
+                path(element, array, node.getLeft());
+            } else { //Element == node.data
+                array.add(node.getData());
+            }
+        }
+        return array;
+
+    }
+
+    public void mirror() {
+        mirrorRecursivoBst(root);
+    }
+
+    private void mirrorRecursivoBst(BtNode<T> node) {
+        if (!node.isNil()) {
+            BtNode<T> nodeEsq = node.getLeft();
+            BtNode<T> nodeDir = node.getRight();
+            node.setLeft(nodeDir);
+            node.setRight(nodeEsq);
+            
+            mirrorRecursivoBst(nodeEsq); //vou repetir tudo para a esquerda
+            mirrorRecursivoBst(nodeDir); //vou repetir tudo para a direita
+        }
     }
 
     public int level(T element) {
         throw new UnsupportedOperationException("Método level não implementado");
-    }
-
-    public T[] path(T element) {
-        throw new UnsupportedOperationException("Método path não implementado");
-    }
-
-    public void mirror() {
-        throw new UnsupportedOperationException("Método mirror não implementado");
     }
 
 }
