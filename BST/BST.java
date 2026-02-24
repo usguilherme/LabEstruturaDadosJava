@@ -280,7 +280,7 @@ public class BST<T extends Comparable<T>> {
     }
 
     public int size() {
-        throw new UnsupportedOperationException("Escolha sizeRecursivo");
+        return sizeRecursivoBst(root);
     }
 
     public int sizeRecursivoBst(BtNode<T> node) {
