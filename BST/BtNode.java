@@ -7,40 +7,33 @@ public class BtNode<T> {
     private BtNode<T> right;
     private BtNode<T> parent;
 
+    // Construtor NIL
+    public BtNode() {
+        this.data = null;
+    }
+
+    // Construtor normal
     public BtNode(T data) {
         this.data = data;
+        this.left = new BtNode<>();
+        this.right = new BtNode<>();
+        this.left.parent = this;
+        this.right.parent = this;
     }
 
-    public T getData() {
-        return data;
+    public boolean isNil() {
+        return this.data == null;
     }
 
-    public void setData(T data) {
-        this.data = data;
-    }
+    public T getData() { return data; }
+    public void setData(T data) { this.data = data; }
 
-    public BtNode<T> getLeft() {
-        return left;
-    }
+    public BtNode<T> getLeft() { return left; }
+    public void setLeft(BtNode<T> left) { this.left = left; }
 
-    public void setLeft(BtNode<T> left) {
-        this.left = left;
-    }
+    public BtNode<T> getRight() { return right; }
+    public void setRight(BtNode<T> right) { this.right = right; }
 
-    public BtNode<T> getRight() {
-        return right;
-    }
-
-    public void setRight(BtNode<T> right) {
-        this.right = right;
-    }
-
-    public BtNode<T> getParent() {
-        return parent;
-    }
-
-    public void setParent(BtNode<T> parent) {
-        this.parent = parent;
-    }
-  
+    public BtNode<T> getParent() { return parent; }
+    public void setParent(BtNode<T> parent) { this.parent = parent; }
 }

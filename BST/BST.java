@@ -6,7 +6,7 @@ public class BST<T extends Comparable<T>> {
 
 
     public boolean isEmpty() {
-        return root == null;
+        return root == null || root.isNil();
     }
 
     public BtNode<T> search(T element) {
@@ -21,7 +21,7 @@ public class BST<T extends Comparable<T>> {
     
     private BtNode<T> searchRecursivoBst(T element, BtNode<T> node) {
         BtNode<T> result = null;
-        if (element != null && node != null) {
+        if (element != null && node != null && !node.isNil()) {
             int comp = element.compareTo(node.getData()); //compare
             if (comp == 0) {
                 result = node; //Find
@@ -35,7 +35,7 @@ public class BST<T extends Comparable<T>> {
     }
 
     public void insert(T value) {
-        if (root == null) {
+        if (root == null || root.isNil()) {
             root = new BtNode<>(value);
         } else {
             insertRecursivoBst(value, root);
@@ -46,7 +46,7 @@ public class BST<T extends Comparable<T>> {
     private void insertRecursivoBst(T element, BtNode<T> node) {
         int comp = element.compareTo(node.getData());
         if (comp > 0) { //Element > node.data, direita
-            if (node.getRight() == null) {
+            if (node.getRight() == null || node.getRight().isNil()) {
                 BtNode<T> newNode = new BtNode<>(element);
                 newNode.setParent(node); // Necessário para o remove funcionar
                 node.setRight(newNode); //Adiciono o nó a direita
@@ -54,7 +54,7 @@ public class BST<T extends Comparable<T>> {
                 insertRecursivoBst(element, node.getRight()); //Continuo percorrendo a direita
             }
         } else if (comp < 0) { //Element < node.data, esquerda
-            if (node.getLeft() == null) {
+            if (node.getLeft() == null || node.getLeft().isNil()) {
                 BtNode<T> newNode = new BtNode<>(element);
                 newNode.setParent(node); // Necessário para o remove funcionar
                 node.setLeft(newNode); //Adiciono o nó a esqueda
@@ -73,8 +73,9 @@ public class BST<T extends Comparable<T>> {
 
     private void removeRecursivoBst(T element, BtNode<T> node ) {
          node = searchRecursivoBst(element, node); //Já cheguei no nó que eu quero
-         if (node != null) { //Achei o nó na bst
-            if (node.getLeft() == null && node.getRight() == null) {//Nó folha
+         if (node != null && !node.isNil()) { //Achei o nó na bst
+            if ((node.getLeft() == null || node.getLeft().isNil()) 
+                && (node.getRight() == null || node.getRight().isNil())) {//Nó folha
                 if (node == root) { //Meu nó a remover é a raiz
                     root = null;
                 } else { //Ele pode ser um nó a esquerda, ou a direita de algum nó
@@ -84,9 +85,10 @@ public class BST<T extends Comparable<T>> {
                         node.getParent().setRight(null); //Nó é filho a direita, então excluo o da direita
                     }
                 }
-            } else if (node.getLeft() == null || node.getRight() == null) { //Nó com pelo menos um filho
+            } else if ((node.getLeft() == null || node.getLeft().isNil()) 
+                    || (node.getRight() == null || node.getRight().isNil())) { //Nó com pelo menos um filho
                 BtNode<T> child;
-                if (node.getLeft() != null) {
+                if (node.getLeft() != null && !node.getLeft().isNil()) {
                     child = node.getLeft();
                 } else {
                     child = node.getRight();
@@ -105,61 +107,25 @@ public class BST<T extends Comparable<T>> {
                 }
             } // CASO 3: O nó tem dois filhos
             else {
-                // Encontra o sucessor: o menor valor da subárvore à direita
                 BtNode<T> sucessor = sucessor(node);
-                
-                // Copia o valor do sucessor para o nó atual (sobrescrevendo o valor a ser removido)
                 node.setData(sucessor.getData());
-                
-                // Chama recursivamente para remover o nó sucessor original (que agora é duplicado)
-                // Inicia a busca na subárvore à direita para evitar buscar na árvore toda
                 removeRecursivoBst(sucessor.getData(), node.getRight());
             }
         }
-    
     }
 
     private BtNode<T> sucessor(BtNode<T> node) {
         BtNode<T> noAtual = node.getRight();
-        while (noAtual != null && noAtual.getLeft() != null) {
+        while (noAtual != null && !noAtual.isNil() 
+               && noAtual.getLeft() != null && !noAtual.getLeft().isNil()) {
             noAtual = noAtual.getLeft();
         }
         return noAtual;
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
     public int height() {
         throw new UnsupportedOperationException("Escolha heightRecursivo");
     }
-
 
     public T[] preOrder() {
         throw new UnsupportedOperationException("Escolha preOrderRecursivo");
@@ -175,6 +141,24 @@ public class BST<T extends Comparable<T>> {
 
     public int size() {
         throw new UnsupportedOperationException("Escolha sizeRecursivo");
+    }
+
+    // 🔥 NOVOS MÉTODOS (sem implementação)
+
+    public boolean equals(BST<T> other) {
+        throw new UnsupportedOperationException("Método equals não implementado");
+    }
+
+    public int level(T element) {
+        throw new UnsupportedOperationException("Método level não implementado");
+    }
+
+    public T[] path(T element) {
+        throw new UnsupportedOperationException("Método path não implementado");
+    }
+
+    public void mirror() {
+        throw new UnsupportedOperationException("Método mirror não implementado");
     }
 
 }
