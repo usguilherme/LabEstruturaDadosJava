@@ -63,22 +63,65 @@ public class BST<T extends Comparable<T>> {
 
     
     public void remove(T key) {
-        throw new UnsupportedOperationException("Escolha removeRecursivo");
+        if (key != null) {
+            removeRecursivoBst(key, root);
+        }
     }
 
     private void removeRecursivoBst(T element, BtNode<T> node ) {
          node = searchRecursivoBst(element, node); //Já cheguei no nó que eu quero
-         if (node != null) {
-            if (node.getLeft() == null && node.getRight() == null) { //Nó folha
-                node = null;
-            } else if (node.getLeft() != null) { //Nó não folha
-                if (node.getRight() == null) { //Nó folha, apenas com a da esquerda
-                    node.getParent().setRight(node.getLeft()); //Fiz com que o pai do meu atual, apontasse para o filho do meu atual
-                } else { //Filho em ambos
-
+         if (node != null) { //Achei o nó na bst
+            if (node.getLeft() == null && node.getRight() == null) {//Nó folha
+                if (node == root) { //Meu nó a remover é a raiz
+                    root = null;
+                } else { //Ele pode ser um nó a esquerda, ou a direita de algum nó
+                    if (node.getParent().getLeft() == node) { //Verificando se o meu nó que achei é filho a esquerda do pai
+                        node.getParent().setLeft(null); //exclui o nó da esquerda
+                    } else {
+                        node.getParent().setRight(null); //Nó é filho a direita, então excluo o da direita
+                    }
                 }
-            } 
-         }
+            } else if (node.getLeft() == null || node.getRight() == null) { //Nó com pelo menos um filho
+                BtNode<T> child;
+                if (node.getLeft() != null) {
+                    child = node.getLeft();
+                } else {
+                    child = node.getRight();
+                }
+
+                if (node == root) { //Se eu tiver um nó, que é root, e só tem um filho
+                    root = child;
+                    child.setParent(null);
+                } else {
+                    child.setParent(node.getParent()); //O pai do meu filho, vai ser o pai do meu atual
+                    if (node.getParent().getLeft() == node) { //o meu atual é um filho a esquerda do seu pai
+                        node.getParent().setLeft(child);
+                    } else {
+                        node.getParent().setRight(child); 
+                    }
+                }
+            } // CASO 3: O nó tem dois filhos
+            else {
+                // Encontra o sucessor: o menor valor da subárvore à direita
+                BtNode<T> sucessor = sucessor(node);
+                
+                // Copia o valor do sucessor para o nó atual (sobrescrevendo o valor a ser removido)
+                node.setData(sucessor.getData());
+                
+                // Chama recursivamente para remover o nó sucessor original (que agora é duplicado)
+                // Inicia a busca na subárvore à direita para evitar buscar na árvore toda
+                removeRecursivoBst(sucessor.getData(), node.getRight());
+            }
+        }
+    
+    }
+
+    private BtNode<T> sucessor(BtNode<T> node) {
+        BtNode<T> noAtual = node.getRight();
+        while (noAtual != null && noAtual.getLeft() != null) {
+            noAtual = noAtual.getLeft();
+        }
+        return noAtual;
     }
     
     
