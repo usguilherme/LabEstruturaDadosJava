@@ -47,18 +47,21 @@ public class BST<T extends Comparable<T>> {
         int comp = element.compareTo(node.getData());
         if (comp > 0) { //Element > node.data, direita
             if (node.getRight() == null) {
-                node.setRight(new BtNode<>(element)); //Adiciono o nó a direita
+                BtNode<T> newNode = new BtNode<>(element);
+                newNode.setParent(node); // Necessário para o remove funcionar
+                node.setRight(newNode); //Adiciono o nó a direita
             } else {
                 insertRecursivoBst(element, node.getRight()); //Continuo percorrendo a direita
             }
         } else if (comp < 0) { //Element < node.data, esquerda
             if (node.getLeft() == null) {
-                node.setLeft(new BtNode<>(element)); //Adiciono o nó a esqueda
+                BtNode<T> newNode = new BtNode<>(element);
+                newNode.setParent(node); // Necessário para o remove funcionar
+                node.setLeft(newNode); //Adiciono o nó a esqueda
             } else {
                 insertRecursivoBst(element, node.getLeft());
             }
         } 
-
     }
 
     
