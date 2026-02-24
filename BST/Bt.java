@@ -2,8 +2,6 @@ package BST;
 
 import java.util.List;
 
-import javax.sound.sampled.Line;
-
 public interface Bt<T> {
 
     BtNode<T> getRoot();
