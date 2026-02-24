@@ -126,26 +126,6 @@ public class BST<T extends Comparable<T>> {
         return noAtual;
     }
 
-    public int height() {
-        throw new UnsupportedOperationException("Escolha heightRecursivo");
-    }
-
-    public T[] preOrder() {
-        throw new UnsupportedOperationException("Escolha preOrderRecursivo");
-    }
-
-    public T[] order() {
-        throw new UnsupportedOperationException("Escolha orderRecursivo");
-    }
-
-    public T[] postOrder() {
-        throw new UnsupportedOperationException("Escolha postOrderRecursivo");
-    }
-
-    public int size() {
-        throw new UnsupportedOperationException("Escolha sizeRecursivo");
-    }
-
     public boolean equals(BST<T> other) {
         boolean result = false;
         if (other != null) {
@@ -252,6 +232,26 @@ public class BST<T extends Comparable<T>> {
                 nodesAtLevel(level - 1, array, node.getRight());
             }
         }
+    }
+
+    public int height() {
+        throw new UnsupportedOperationException("Escolha heightRecursivo");
+    }
+
+    public T[] preOrder() {
+        throw new UnsupportedOperationException("Escolha preOrderRecursivo");
+    }
+
+    public T[] order() {
+        throw new UnsupportedOperationException("Escolha orderRecursivo");
+    }
+
+    public T[] postOrder() {
+        throw new UnsupportedOperationException("Escolha postOrderRecursivo");
+    }
+
+    public int size() {
+        throw new UnsupportedOperationException("Escolha sizeRecursivo");
     }
 
 }
