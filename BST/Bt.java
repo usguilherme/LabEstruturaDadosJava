@@ -26,9 +26,12 @@ public interface Bt<T> {
 
     boolean equals(Bt<T> other); // Verifica se duas BST são iguais
 
-    int level(T element); // Retorna o nível de um elemento na árvore
+    int level(T element, int nivel); // Retorna o nível de um elemento na árvore
 
     List<T> path(T element); // Retorna o caminho da raiz até o elemento
 
     void mirror(); // Espelha (inverte) a árvore
+
+    List<T> nodesAtLevel(int level); // Retorna todos os nós de um nível específico
+
 }

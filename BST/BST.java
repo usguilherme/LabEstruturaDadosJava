@@ -213,7 +213,45 @@ public class BST<T extends Comparable<T>> {
     }
 
     public int level(T element) {
-        throw new UnsupportedOperationException("Método level não implementado");
+        int result = -1;
+        if (element != null) {
+            result = levelRecursivoBst(element, root);
+        }
+        return result;
+    }
+
+    private int levelRecursivoBst(T element, BtNode<T> node) {
+        int result = -1;
+        if (!node.isNil()) {
+            int comp = element.compareTo(node.getData()); 
+            if (!node.getData().equals(element)) { //Se eu ainda não achei
+                if (comp > 0) { //Element > node.data, vou pra direita
+                    result = 1 + levelRecursivoBst(element, node.getRight());
+                }else { //Element < node.data, vou pra esquerda
+                    result = 1 + levelRecursivoBst(element, node.getLeft());
+                }  
+            } else { //Se eu achar o elemento
+                result += 1;
+            }      
+        }
+        return result;
+    }
+    
+    public List<T> nodesAtLevel(int level) {
+        List<T> array = new ArrayList<>();
+        nodesAtLevel(level, array, root);
+        return array;
+    }
+
+    private void nodesAtLevel(int level, List<T> array, BtNode<T> node) {
+        if (!node.isNil()) {
+            if (level == 0) {
+                array.add(node.getData());
+            } else {
+                nodesAtLevel(level - 1, array, node.getLeft());
+                nodesAtLevel(level - 1, array, node.getRight());
+            }
+        }
     }
 
 }
