@@ -110,14 +110,14 @@ public class BST<T extends Comparable<T>> {
                 }
             } // CASO 3: O nó tem dois filhos
             else {
-                BtNode<T> sucessor = sucessor(node);
+                BtNode<T> sucessor = sucessor1(node);
                 node.setData(sucessor.getData());
                 removeRecursivoBst(sucessor.getData(), node.getRight());
             }
         }
     }
 
-    private BtNode<T> sucessor(BtNode<T> node) {
+    private BtNode<T> sucessor1(BtNode<T> node) {
         BtNode<T> noAtual = node.getRight();
         while (noAtual != null && !noAtual.isNil() 
                && noAtual.getLeft() != null && !noAtual.getLeft().isNil()) {
@@ -186,7 +186,7 @@ public class BST<T extends Comparable<T>> {
             BtNode<T> nodeDir = node.getRight();
             node.setLeft(nodeDir);
             node.setRight(nodeEsq);
-            
+             
             mirrorRecursivoBst(nodeEsq); //vou repetir tudo para a esquerda
             mirrorRecursivoBst(nodeDir); //vou repetir tudo para a direita
         }
@@ -305,4 +305,62 @@ public class BST<T extends Comparable<T>> {
         return altura; 
     }
 
+
+    public T min(BtNode<T> root) {
+        T result = null;
+        if (!root.isNil()) {
+            result = minAux(root);
+        }
+        return result;
+        
+    }
+
+    private T minAux(BtNode<T> node) {
+        T result = node.getData();
+        if (!node.getLeft().isNil()) {
+            result = minAux(node.getLeft());
+        }
+
+        return result;
+    }
+
+    public T max(BtNode<T> root) {
+        T result = null;
+        if (!root.isNil()) {
+            result = maxAux(root);
+        }
+        return result;
+    }
+
+    public T maxAux(BtNode<T> node) {
+        T result = node.getData();
+        if (!node.getRight().isNil()) {
+            result = maxAux(node.getRight());
+        }
+        return result;
+    }
+
+
+
+
+    public T sucessor (BtNode<T> root) {
+        return null;
+    }
+
+    private T sucessorAux(BtNode<T> node, T valor) {
+        T result = null;
+        if (!node.isNil()) {
+            int comp = node.getData().compareTo(valor);
+            if (comp <= 0) { //node.data < valor, vou para a direita
+                result = sucessorAux(node.getRight(), valor); //Vou até a última ocorrencia do meu maior que X, pois se ele não entrar aqui, ele já é o último maior
+            } else { //node.data >= valor, possivel candidato
+                result = node.getData();
+                T leftResult = sucessorAux(node.getLeft(), valor);
+                if (leftResult != null) {
+                    result = leftResult;
+                }
+            }
+        }
+        return result;
+    }
 }
