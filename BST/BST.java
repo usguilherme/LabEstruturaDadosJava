@@ -393,4 +393,25 @@ public class BST<T extends Comparable<T>> {
         }
         return result;
     }
+
+    public int countLeaves(BtNode<T> root) {
+        int result = 0;
+        if (!root.isNil()) {
+            result = countLeavesAux(root);
+        }
+        return result;
+    }
+
+    private int countLeavesAux(BtNode<T> node) {
+        int result = 0;
+        if (!node.isNil()) {
+            if (node.getLeft().isNil() && node.getRight().isNil()) { //Nó folha
+                result += 1;
+            } else {
+                result += countLeavesAux(node.getLeft()) + countLeavesAux(node.getRight());
+            }
+        }
+        return result;
+    }
+
 }
