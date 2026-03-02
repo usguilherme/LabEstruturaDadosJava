@@ -343,8 +343,12 @@ public class BST<T extends Comparable<T>> {
 
 
 
-    public T sucessor (BtNode<T> root) {
-        return null;
+    public T sucessor (T valor) {
+        T result = null;
+        if (!root.isNil()) {
+            result = sucessorAux(this.root, valor);
+        }
+        return result;
     }
 
     private T sucessorAux(BtNode<T> node, T valor) {
