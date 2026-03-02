@@ -332,7 +332,7 @@ public class BST<T extends Comparable<T>> {
         return result;
     }
 
-    public T maxAux(BtNode<T> node) {
+    private T maxAux(BtNode<T> node) {
         T result = node.getData();
         if (!node.getRight().isNil()) {
             result = maxAux(node.getRight());
@@ -355,13 +355,39 @@ public class BST<T extends Comparable<T>> {
         T result = null;
         if (!node.isNil()) {
             int comp = node.getData().compareTo(valor);
-            if (comp <= 0) { //node.data < valor, vou para a direita
+            if (comp <= 0) { //valor >= node.data, vou para a direita
                 result = sucessorAux(node.getRight(), valor); //Vou até a última ocorrencia do meu maior que X, pois se ele não entrar aqui, ele já é o último maior
-            } else { //node.data >= valor, possivel candidato
+            } else { //valor < node.data, possivel candidato
                 result = node.getData();
                 T leftResult = sucessorAux(node.getLeft(), valor);
                 if (leftResult != null) {
                     result = leftResult;
+                }
+            }
+        }
+        return result;
+    }
+
+
+    public T predecesor (T valor) {
+        T result = null;
+        if (!this.root.isNil()) {
+            result = predecessorAux(root, valor);
+        }
+        return result;
+    }
+
+    private T predecessorAux(BtNode<T> node, T valor) {
+        T result = null;
+        if (!node.isNil()) {
+            int comp = node.getData().compareTo(valor);
+            if (comp >= 0) {
+                result = predecessorAux(node.getLeft(), valor);
+            } else {
+                result = node.getData();
+                T rigthResult = predecessorAux(node.getRight(), valor);
+                if (rigthResult != null) {
+                    result = rigthResult;
                 }
             }
         }
