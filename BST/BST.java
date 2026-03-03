@@ -414,4 +414,20 @@ public class BST<T extends Comparable<T>> {
         return result;
     }
 
+
+    public boolean isFull(BtNode<T> root) {
+        return isFullAux(root);
+    }
+
+    private boolean isFullAux(BtNode<T> node) {
+        boolean condicao = true;
+        if (!node.isNil()) {
+            if (node.getLeft().isNil() ^ node.getRight().isNil()) { //xor
+                condicao = false;
+            }
+            condicao = condicao && isFullAux(node.getLeft()) && isFullAux(node.getRight());
+        }
+        return condicao;
+
+    }
 }
