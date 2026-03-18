@@ -74,12 +74,47 @@ public class fixarExerciciosBB {
 
     // 4. Última ocorrência de x
     public int lastOccurrence(Integer[] array, Integer x) {
-        throw new UnsupportedOperationException("Use lastOccurrenceIterativo");
+        return lastOccurrenceAux(array, x, 0, array.length - 1);
+    }
+
+    private int lastOccurrenceAux(Integer[] array, Integer valor, int leftIndex, int rightIndex) {
+        int result = -1;
+        if (leftIndex <= rightIndex) {
+            int mid = (leftIndex + rightIndex) / 2;
+            if (array[mid].equals(valor) && (mid == rightIndex || !array[mid + 1].equals(valor))) {
+                result = mid;
+            } else if (array[mid] <= valor) {
+                result = lastOccurrenceAux(array, valor, mid + 1, rightIndex);
+            } else {
+                result = lastOccurrenceAux(array, valor, leftIndex, mid - 1);
+            }
+        }
+        return result;
     }
 
     // 5. Contar elementos >= x
     public int countGreaterOrEqual(Integer[] array, Integer x) {
-        throw new UnsupportedOperationException("Use countGreaterOrEqualIterativo");
+        int valor = 0;
+        int result = countGreaterOrEqualAux(array, x, 0, array.length - 1);
+        if (result != -1) {
+            valor = array.length - result;
+        } 
+        return valor;
+    }
+
+    private int countGreaterOrEqualAux(Integer[] array, Integer valor, int leftIndex, int rightIndex) {
+        int result = -1;
+        if (leftIndex <= rightIndex) {
+            int mid = (leftIndex + rightIndex) / 2;
+            if (array[mid] >= valor && (mid == 0 || array[mid -1] < valor)) {
+                result = mid;
+            } else if (array[mid] >= valor) {
+                result = countGreaterOrEqualAux(array, valor, leftIndex, mid - 1);
+            } else {
+                result = countGreaterOrEqualAux(array, valor, mid + 1, rightIndex);
+            }
+        }
+        return result;
     }
 
     // 6. Ceil
