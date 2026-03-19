@@ -119,7 +119,22 @@ public class fixarExerciciosBB {
 
     // 6. Ceil
     public int ceil(Integer[] array, Integer x) {
-        throw new UnsupportedOperationException("Use ceilIterativo");
+        return ceilAux(array, x, 0, array.length - 1);
+    }
+
+    private int ceilAux(Integer[] array, Integer valor, int leftIndex, int rightIndex) {
+        int result = -1;
+        if (leftIndex <= rightIndex) {
+            int mid = (leftIndex + rightIndex) / 2;
+            if (array[mid] >= valor && (mid == 0 || array[mid - 1] < valor)) {
+                result = mid;
+            } else if (array[mid] < valor) {
+                result = ceilAux(array, valor, mid + 1, rightIndex);
+            } else {
+                result = ceilAux(array, valor, leftIndex, mid - 1);
+            }
+        }
+        return result;
     }
 
     // 7. Floor
