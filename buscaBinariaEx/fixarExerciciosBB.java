@@ -139,7 +139,22 @@ public class fixarExerciciosBB {
 
     // 7. Floor
     public Integer floor(Integer[] array, Integer x) {
-        throw new UnsupportedOperationException("Use floorIterativo");
+        return floorAux(array, x, 0, array.length - 1);
+    }
+
+    private int floorAux(Integer[] array, Integer valor, int leftIndex, int rightIndex) {
+        int result = -1;
+        if (leftIndex <= rightIndex) {
+            int mid = (leftIndex + rightIndex) / 2;
+            if (array[mid] <= valor && (mid == rightIndex || array[mid + 1] > valor)) {
+                result = mid;
+            } else if (array[mid] <= valor) {
+                result = floorAux(array, valor, mid + 1, rightIndex);
+            } else {
+                result = floorAux(array, valor, leftIndex, mid - 1);
+            }
+        }
+        return result;
     }
 
     // 10. Contar elementos no intervalo [a, b]
