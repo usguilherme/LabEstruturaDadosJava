@@ -221,8 +221,32 @@ public class fixarExerciciosBB {
 
     // 12. Contar elementos no intervalo [a, b]
     public int countInRange(Integer[] array, Integer a, Integer b) {
-        throw new UnsupportedOperationException("Use countInRangeIterativo");
+        int result = 0;
+        int first = countGreaterOrEqualAux(array, a, 0, array.length - 1);
+        int last = countInRangeAux(array, b, 0, array.length - 1);
+        if (first != -1 && last != -1 && first <= last) {
+            result = last - first + 1;
+        }
+        return result;
+
     }
+
+    private int countInRangeAux(Integer[] array, Integer valor, int leftIndex, int rightIndex) {
+        int result = -1;
+        if (leftIndex <= rightIndex) {
+            int mid = (leftIndex + rightIndex) / 2;
+            if (array[mid] <= valor && (mid == rightIndex || array[mid + 1] > valor)) {
+                result = mid;
+            } else if (array[mid] <= valor) {
+                result = countInRangeAux(array, valor, mid + 1, rightIndex);
+            } else {
+                result = countInRangeAux(array, valor, leftIndex, mid - 1);
+            }
+        }
+        return result;
+    }
+
+    
 
 
     // 13. Ponto de mudança
