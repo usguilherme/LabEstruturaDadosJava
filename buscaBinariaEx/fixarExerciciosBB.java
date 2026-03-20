@@ -246,9 +246,6 @@ public class fixarExerciciosBB {
         return result;
     }
 
-    
-
-
     // 13. Ponto de mudança
     public int findChangePoint(Integer[] array) {
         throw new UnsupportedOperationException("Use findChangePointIterativo");
