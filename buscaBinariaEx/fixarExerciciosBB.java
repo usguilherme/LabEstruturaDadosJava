@@ -164,13 +164,66 @@ public class fixarExerciciosBB {
 
     // 11. Primeiro elemento > x
     public Integer firstGreater(Integer[] array, Integer x) {
-        throw new UnsupportedOperationException("Use firstGreaterIterativo");
+        return firstGreaterAux(array, x, 0, array.length - 1);
+    }
+
+    private int firstGreaterAux(Integer[] array, Integer valor, int leftIndex, int rightIndex) {
+        int result = -1;
+        if (leftIndex <= rightIndex) {
+            int mid = (leftIndex + rightIndex) / 2;
+            if (array[mid] > valor && (mid == 0 || array[mid + 1] <= valor)) {
+                result = mid;
+            } else if (array[mid] < valor) {
+                result = firstOccurrenceAux(array, valor, mid + 1, rightIndex);
+            } else {
+                result = firstGreaterAux(array, valor, leftIndex, mid - 1);
+            }
+        }
+        return result;
     }
 
     // 12. Contar ocorrências de x
     public int countOccurrences(Integer[] array, Integer x) {
-        throw new UnsupportedOperationException("Use countOccurrencesIterativo");
+        int result = 0;
+        int last = countLastOcorrenceAux(array, x, 0, array.length - 1);
+        int first = countFirstOcorrenceAux(array, x, 0, array.length - 1);
+        if (last != -1 && first != -1) {
+            result = last - first + 1;
+        }
+        return result;
     }
+
+
+    private int countFirstOcorrenceAux(Integer[] array, Integer valor, int leftIndex, int rightIndex) {
+        int result = -1;
+        if (leftIndex <= rightIndex) {
+            int mid = (leftIndex + rightIndex) / 2;
+            if (array[mid].equals(valor) && (mid == 0 || !array[mid -1].equals(valor))) {
+                result = mid;
+            } else if (array[mid] >= valor) {
+                result = countFirstOcorrenceAux(array, valor, leftIndex, mid - 1);
+            } else {
+                result = countFirstOcorrenceAux(array, valor, mid + 1, rightIndex);
+            }
+        }
+        return result;
+    }
+
+    private int countLastOcorrenceAux(Integer[] array, Integer valor, int leftIndex, int rightIndex) {
+        int result = -1;
+        if (leftIndex <= rightIndex) {
+            int mid = (leftIndex + rightIndex) / 2;
+            if (array[mid].equals(valor) && (mid == rightIndex || !array[mid + 1].equals(valor))) {
+                result = mid;
+            } else if (array[mid] <= valor) {
+                result = countLastOcorrenceAux(array, valor, mid + 1, rightIndex);
+            } else {
+                result = countLastOcorrenceAux(array, valor, leftIndex, mid - 1);
+            }
+        }
+        return result;
+    }
+
 
     // 13. Ponto de mudança
     public int findChangePoint(Integer[] array) {
