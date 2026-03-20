@@ -248,7 +248,23 @@ public class fixarExerciciosBB {
 
     // 13. Ponto de mudança
     public int findChangePoint(Integer[] array) {
-        throw new UnsupportedOperationException("Use findChangePointIterativo");
+        int result = findChangePoint(array, 0, array.length - 1);
+        return result;
+    }
+
+    private int findChangePoint(Integer[] array,int leftIndex, int rightIndex) {
+        int result = -1;
+        if (leftIndex <= rightIndex) {
+            int mid = (leftIndex + rightIndex) / 2;
+            if (mid < array.length - 1 && array[mid] > array[mid + 1]) {
+                result = mid + 1;
+            } else if (array[leftIndex] <= array[mid]) {
+                result = findChangePoint(array, mid + 1, rightIndex);
+            } else {
+                result = findChangePoint(array, leftIndex, mid - 1);
+            }
+        }
+        return result;
     }
 
 }
