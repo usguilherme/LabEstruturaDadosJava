@@ -157,11 +157,6 @@ public class fixarExerciciosBB {
         return result;
     }
 
-    // 10. Contar elementos no intervalo [a, b]
-    public int countInRange(Integer[] array, Integer a, Integer b) {
-        throw new UnsupportedOperationException("Use countInRangeIterativo");
-    }
-
     // 11. Primeiro elemento > x
     public Integer firstGreater(Integer[] array, Integer x) {
         return firstGreaterAux(array, x, 0, array.length - 1);
@@ -222,6 +217,11 @@ public class fixarExerciciosBB {
             }
         }
         return result;
+    }
+
+    // 12. Contar elementos no intervalo [a, b]
+    public int countInRange(Integer[] array, Integer a, Integer b) {
+        throw new UnsupportedOperationException("Use countInRangeIterativo");
     }
 
 
