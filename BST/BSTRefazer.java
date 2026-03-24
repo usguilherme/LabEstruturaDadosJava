@@ -47,7 +47,7 @@ public class BSTRefazer<T extends Comparable<T>> {
             node.setLeft(new BtNode<T>()); //Apenas criando os filhos a esquerda e direita
             node.setRight(new BtNode<T>());
         } else {
-            int comp = node.getData().compareTo(element) // node.data e element
+            int comp = node.getData().compareTo(element); // node.data e element
             if (comp > 0) { //node.data > element, vou pra esquerda
                 inserirAux(element, node.getLeft());
             } else if (comp < 0) {
@@ -55,13 +55,6 @@ public class BSTRefazer<T extends Comparable<T>> {
             }
         }
     }
-
-
-    public void remove(T key) {
-        // TODO: Localizar o nó e tratar os 3 casos (folha, 1 filho, 2 filhos)
-    }
-
-    // --- MÉTODOS DE INFORMAÇÃO ---
 
     public int size() {
         return sizeAux(root);

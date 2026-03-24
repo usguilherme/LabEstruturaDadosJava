@@ -170,65 +170,58 @@ public class SingleLinkedListImpl<T> implements LinkedList<T> {
         throw new UnsupportedOperationException("Escolha insertPositionIterativo ou insertPositionRecursivo");
     }
 
-    public void insertPositionIterativo(int position, T element) {
-        throw new UnsupportedOperationException("Unimplemented method 'insertPositionIterativo'");
+
+    private void insertPositionRecursivo(int position, T element, SingleLinkedListImpl<T> head) {
+        if (element != null && !head.isEmpty()) {
+            if (position == 0) { //Cheguei onde eu quero
+                SingleLinkedListImpl<T> novo = new SingleLinkedListImpl<>();
+                novo.setData(element);
+                novo.setNext(head.getNext());
+                head.setNext(novo);
+            } else {
+                insertPositionRecursivo(position - 1, element, head.getNext());
+            }
+        }
     }
 
-    public void insertPositionRecursivo(int position, T element) {
-        throw new UnsupportedOperationException("Unimplemented method 'insertPositionRecursivo'");
-    }
-
-    @Override
-    public void removeFirst() {
-        throw new UnsupportedOperationException("Escolha removeFirstIterativo ou removeFirstRecursivo");
-    }
-
-    public void removeFirstIterativo() {
-        throw new UnsupportedOperationException("Unimplemented method 'removeFirstIterativo'");
-    }
-
-    public void removeFirstRecursivo() {
-        throw new UnsupportedOperationException("Unimplemented method 'removeFirstRecursivo'");
-    }
-
-    @Override
-    public void removeLast() {
-        throw new UnsupportedOperationException("Escolha removeLastIterativo ou removeLastRecursivo");
-    }
-
-    public void removeLastIterativo() {
-        throw new UnsupportedOperationException("Unimplemented method 'removeLastIterativo'");
-    }
-
-    public void removeLastRecursivo() {
-        throw new UnsupportedOperationException("Unimplemented method 'removeLastRecursivo'");
-    }
-
-    @Override
-    public void removeValue(T element) {
-        throw new UnsupportedOperationException("Escolha removeValueIterativo ou removeValueRecursivo");
-    }
-
-    public void removeValueIterativo(T element) {
-        throw new UnsupportedOperationException("Unimplemented method 'removeValueIterativo'");
-    }
-
-    public void removeValueRecursivo(T element) {
-        throw new UnsupportedOperationException("Unimplemented method 'removeValueRecursivo'");
-    }
 
     @Override
     public void removePosition(int position) {
         throw new UnsupportedOperationException("Escolha removePositionIterativo ou removePositionRecursivo");
     }
 
-    public void removePositionIterativo(int position) {
-        throw new UnsupportedOperationException("Unimplemented method 'removePositionIterativo'");
+    private void removePositionRecursivo(int position, SingleLinkedListImpl<T> head) {
+        if (!head.isEmpty() && head.getNext() != null) { //meu nó não sendo vázio, e tendo o próximo
+            if (position == 1) { //Cheguei onde eu queria, no antecessor dele
+                head.setNext(head.getNext().getNext()); 
+            } else {
+                removePositionRecursivo(position -1, head.getNext()); //passo indutivo
+            }
+        }
+        
     }
 
-    public void removePositionRecursivo(int position) {
-        throw new UnsupportedOperationException("Unimplemented method 'removePositionRecursivo'");
-    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     @Override
     public T[] toArray() {
@@ -254,6 +247,34 @@ public class SingleLinkedListImpl<T> implements LinkedList<T> {
 
     public boolean containsRecursivo(T element) {
         throw new UnsupportedOperationException("Unimplemented method 'containsRecursivo'");
+    }
+
+
+    @Override
+    public void removeFirst() {
+        throw new UnsupportedOperationException("Escolha removeFirstIterativo ou removeFirstRecursivo");
+    }
+
+    public void removeFirstRecursivo() {
+        throw new UnsupportedOperationException("Unimplemented method 'removeFirstRecursivo'");
+    }
+
+    @Override
+    public void removeLast() {
+        throw new UnsupportedOperationException("Escolha removeLastIterativo ou removeLastRecursivo");
+    }
+
+    public void removeLastRecursivo() {
+        throw new UnsupportedOperationException("Unimplemented method 'removeLastRecursivo'");
+    }
+
+    @Override
+    public void removeValue(T element) {
+        throw new UnsupportedOperationException("Escolha removeValueIterativo ou removeValueRecursivo");
+    }
+
+    public void removeValueRecursivo(T element) {
+        throw new UnsupportedOperationException("Unimplemented method 'removeValueRecursivo'");
     }
 
     /* ===== os outros métodos da interface seguem o MESMO PADRÃO ===== */
