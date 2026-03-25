@@ -28,11 +28,11 @@ public class SingleLinkedListImpl<T> implements LinkedList<T> {
         return this.data == null;
     }
 
-    /* ===================== MÉTODOS DA INTERFACE ===================== */
+    /*MÉTODOS*/
 
     @Override
     public int size() {
-        throw new UnsupportedOperationException("Escolha sizeIterativo ou sizeRecursivo");
+        return sizeRecursivo(this);
     }
 
     public int sizeIterativo(SingleLinkedListImpl<T> head) {
@@ -55,7 +55,7 @@ public class SingleLinkedListImpl<T> implements LinkedList<T> {
 
     @Override
     public T search(T element) {
-        throw new UnsupportedOperationException("Escolha searchIterativo ou searchRecursivo");
+        return searchRecursivo(element, this);
     }
 
     public T searchIterativo(T element, SingleLinkedListImpl<T> head ) {
@@ -85,7 +85,7 @@ public class SingleLinkedListImpl<T> implements LinkedList<T> {
 
     @Override
     public T searchPosition(int position) {
-        throw new UnsupportedOperationException("Escolha searchPositionIterativo ou searchPositionRecursivo");
+        return searchPositionRecursivo(position, this);
     }
 
     public T searchPositionIterativo(int position, SingleLinkedListImpl<T> head) {
@@ -96,7 +96,9 @@ public class SingleLinkedListImpl<T> implements LinkedList<T> {
                 position--;
                 aux = aux.getNext(); //Até chegar onde eu quero
             }
-            result = aux.getData();
+            if (aux != null && !aux.isEmpty()) {
+                result = aux.getData();
+            }
         }
         return result;
     }
@@ -116,7 +118,7 @@ public class SingleLinkedListImpl<T> implements LinkedList<T> {
 
     @Override
     public void insertFirst(T element) {
-        throw new UnsupportedOperationException("Escolha insertFirstIterativo ou insertFirstRecursivo");
+        insertFirstRecursivo(element, this);
     }
 
     public void insertFirstIterativo(T element, SingleLinkedListImpl<T> head) {
@@ -126,14 +128,18 @@ public class SingleLinkedListImpl<T> implements LinkedList<T> {
     }
 
     public void insertFirstRecursivo(T element, SingleLinkedListImpl<T> head) {
+    if (element != null) {
         SingleLinkedListImpl<T> novo = new SingleLinkedListImpl<>();
-        novo.setData(element);
-        novo.setNext(head);
+        novo.setData(head.getData());
+        novo.setNext(head.getNext());
+        head.setData(element);
+        head.setNext(novo);
     }
+}
 
     @Override
     public void insertLast(T element) {
-        throw new UnsupportedOperationException("Escolha insertLastIterativo ou insertLastRecursivo");
+        insertLastRecursivo(element, this);
     }
 
     public void insertLastIterativo(T element, SingleLinkedListImpl<T> head) {
@@ -144,32 +150,27 @@ public class SingleLinkedListImpl<T> implements LinkedList<T> {
         SingleLinkedListImpl<T> novo = new SingleLinkedListImpl<>();
         novo.data = element;
         novo.setNext(aux.getNext());
-        aux.setNext(novo);
-
-        
-        
+        aux.setNext(novo);       
     }
 
     public void insertLastRecursivo(T element, SingleLinkedListImpl<T> head) {
-        if (head == null || head.isEmpty()) { //Lista vázia
+        if (head.isEmpty()) {
+            head.setData(element);
+        } 
+        else if (head.getNext() == null) {
             SingleLinkedListImpl<T> novo = new SingleLinkedListImpl<>();
             novo.setData(element);
-            novo.setNext(null);
-        } else if (head.getNext() == null) {
-            //novo.next = atual.next, atual.next = novo
-            SingleLinkedListImpl<T> novo = new SingleLinkedListImpl<>();
-            novo.setData(element);
-            novo.setNext(head);
             head.setNext(novo);
+        } 
+        else {
+            insertLastRecursivo(element, head.getNext());
         }
-        insertLastRecursivo(element, head.next);
     }
 
     @Override
     public void insertPosition(int position, T element) {
-        throw new UnsupportedOperationException("Escolha insertPositionIterativo ou insertPositionRecursivo");
+        insertPositionRecursivo(position, element, this);
     }
-
 
     private void insertPositionRecursivo(int position, T element, SingleLinkedListImpl<T> head) {
         if (element != null && !head.isEmpty()) {
@@ -184,10 +185,9 @@ public class SingleLinkedListImpl<T> implements LinkedList<T> {
         }
     }
 
-
     @Override
     public void removePosition(int position) {
-        throw new UnsupportedOperationException("Escolha removePositionIterativo ou removePositionRecursivo");
+        removePositionRecursivo(position, this);
     }
 
     private void removePositionRecursivo(int position, SingleLinkedListImpl<T> head) {
@@ -201,81 +201,126 @@ public class SingleLinkedListImpl<T> implements LinkedList<T> {
         
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     @Override
     public T[] toArray() {
-        throw new UnsupportedOperationException("Escolha toArrayIterativo ou toArrayRecursivo");
+        return toArrayRecursivo();
     }
 
-    public T[] toArrayIterativo() {
-        throw new UnsupportedOperationException("Unimplemented method 'toArrayIterativo'");
+    private T[] toArrayIterativo() {
+        int tamanho = sizeIterativo(this);
+        T[] result = (T[]) new Object[tamanho];
+
+        SingleLinkedListImpl<T> aux = this;
+        int i = 0;
+
+        while (aux != null && !aux.isEmpty()) {
+            result[i] = aux.getData();
+            aux = aux.getNext();
+            i++;
+        }
+        return result;
     }
 
-    public T[] toArrayRecursivo() {
-        throw new UnsupportedOperationException("Unimplemented method 'toArrayRecursivo'");
+    private T[] toArrayRecursivo() {
+        int tamanho = sizeRecursivo(this);
+        T[] result = (T[]) new Object[tamanho];
+        toArrayRecursivoAux(this, result, 0);
+        return result;
+    }
+
+
+    private void toArrayRecursivoAux(SingleLinkedListImpl<T> head, T[] array, int index) {
+        if (head != null && !head.isEmpty()) {
+            array[index] = head.getData();
+            toArrayRecursivoAux(head.getNext(), array, index + 1);
+        }
     }
 
     @Override
     public boolean contains(T element) {
-        throw new UnsupportedOperationException("Escolha containsIterativo ou containsRecursivo");
+        return containsRecursivo(element);
     }
 
     public boolean containsIterativo(T element) {
-        throw new UnsupportedOperationException("Unimplemented method 'containsIterativo'");
+        boolean result = false;
+
+        SingleLinkedListImpl<T> aux = this;
+
+        while (aux != null && !aux.isEmpty() && !result) {
+            if (aux.getData().equals(element)) {
+                result = true;
+            }
+            aux = aux.getNext();
+        }
+
+    return result;
     }
 
     public boolean containsRecursivo(T element) {
-        throw new UnsupportedOperationException("Unimplemented method 'containsRecursivo'");
-    }
-
+        boolean result = false;
+        if (!this.isEmpty()) {
+            if (this.getData().equals(element)) {
+                result = true;
+            } else if (this.getNext() != null) {
+                result = this.getNext().containsRecursivo(element);
+            }
+        }
+        return result;
+    } 
 
     @Override
     public void removeFirst() {
-        throw new UnsupportedOperationException("Escolha removeFirstIterativo ou removeFirstRecursivo");
+        removeFirstRecursivo();
     }
 
     public void removeFirstRecursivo() {
-        throw new UnsupportedOperationException("Unimplemented method 'removeFirstRecursivo'");
+        if (!this.isEmpty()) {
+            if (this.getNext() != null) {
+                this.setData(this.getNext().getData());
+                this.setNext(this.getNext().getNext());
+            } else {
+                this.setData(null);
+                this.setNext(null);
+            }
+        }
     }
 
     @Override
     public void removeLast() {
-        throw new UnsupportedOperationException("Escolha removeLastIterativo ou removeLastRecursivo");
+        removeLastAux(this);
     }
 
-    public void removeLastRecursivo() {
-        throw new UnsupportedOperationException("Unimplemented method 'removeLastRecursivo'");
+    private void removeLastAux(SingleLinkedListImpl<T> head) {
+        if (!head.isEmpty() && head.getNext() != null) {
+
+            if (head.getNext().getNext() == null) {
+                head.setNext(null);
+            } else {
+                removeLastAux(head.getNext());
+            }
+        }
     }
 
     @Override
     public void removeValue(T element) {
-        throw new UnsupportedOperationException("Escolha removeValueIterativo ou removeValueRecursivo");
+        removeValueAux(element, this);
     }
 
-    public void removeValueRecursivo(T element) {
-        throw new UnsupportedOperationException("Unimplemented method 'removeValueRecursivo'");
+    private void removeValueAux(T element, SingleLinkedListImpl<T> head) {
+        if (!head.isEmpty() && head.getNext() != null) {
+            if (head.getNext().getData().equals(element)) {
+                head.setNext(head.getNext().getNext());
+            } else {
+                removeValueAux(element, head.getNext());
+            }
+        }
+        if (!head.isEmpty() && head.getData().equals(element)) {
+            if (head.getNext() != null) {
+                head.setData(head.getNext().getData());
+                head.setNext(head.getNext().getNext());
+            } else {
+                head.setData(null);
+            }
+        }
     }
-
-    /* ===== os outros métodos da interface seguem o MESMO PADRÃO ===== */
 }

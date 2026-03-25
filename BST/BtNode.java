@@ -1,6 +1,6 @@
 package BST;
 
-public class BtNode<T> {
+public class BtNode<T extends Comparable<T>> {
 
     private T data;
     private BtNode<T> left;

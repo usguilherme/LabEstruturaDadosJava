@@ -1,4 +1,4 @@
-public class BinarySearchExercises { //Exercícios voltados para busca binária recursiva.
+public class BinarySearchExercises implements BinarySearchExercisesInterface { //Exercícios voltados para busca binária recursiva.
 
     // 1. Contar elementos menores que x
     public int countLess(Integer[] array, Integer x) {
