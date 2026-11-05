@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Estruturas de Dados · Visualizador</title>
+<style>
+:root{
+  --bg:#0b1020;--panel:#131a30;--panel2:#1a2340;--line:#2a3558;--text:#e8ecf8;--muted:#8d99bd;
+  --accent:#4cc9f0;--accent2:#7b61ff;--ok:#2ecc8f;--warn:#ffc857;--bad:#ff5d73;--piv:#b57bff;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:radial-gradient(1200px 600px at 10% -10%,#1b2450 0%,transparent 60%),var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;min-height:100vh;padding-bottom:40px}
+header{max-width:1100px;margin:0 auto;padding:28px 20px 10px;display:flex;flex-wrap:wrap;gap:12px 24px;align-items:center;justify-content:space-between}
+h1{font-size:1.6rem;letter-spacing:.2px}
+h1 span{background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+header p{color:var(--muted);font-size:.9rem;margin-top:4px}
+.speed{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:.85rem;background:var(--panel);border:1px solid var(--line);padding:8px 14px;border-radius:999px}
+.speed input{accent-color:var(--accent)}
+nav{max-width:1100px;margin:10px auto 0;padding:0 20px;display:flex;gap:8px;flex-wrap:wrap}
+nav button{background:var(--panel);color:var(--muted);border:1px solid var(--line);padding:9px 16px;border-radius:10px;cursor:pointer;font-size:.9rem;transition:.2s}
+nav button:hover{color:var(--text);border-color:var(--accent)}
+nav button.on{color:#06101f;background:linear-gradient(90deg,var(--accent),var(--accent2));border-color:transparent;font-weight:600}
+main{max-width:1100px;margin:16px auto 0;padding:0 20px}
+section{display:none;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px;animation:in .25s ease}
+section.on{display:block}
+@keyframes in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
+.controls .lbl{color:var(--muted);font-size:.85rem;margin-right:4px}
+input[type=number],select{background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:8px;padding:9px 12px;width:120px;font-size:.95rem;outline:none}
+select{width:auto}
+input[type=number]:focus,select:focus{border-color:var(--accent)}
+.controls button{background:var(--panel2);color:var(--text);border:1px solid var(--line);padding:9px 14px;border-radius:8px;cursor:pointer;font-size:.9rem;transition:.15s}
+.controls button:hover{border-color:var(--accent);transform:translateY(-1px)}
+.controls button.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#06101f;border-color:transparent;font-weight:600}
+.controls button.ghost{color:var(--muted)}
+.controls input[type=range]{accent-color:var(--accent2)}
+.msg{min-height:22px;color:var(--warn);font-size:.9rem;margin-bottom:10px}
+.stage{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:18px;overflow:auto;min-height:220px;display:flex;justify-content:center;align-items:center}
+.stage svg{display:block;margin:auto}
+.out{margin-top:10px;color:var(--accent);font-family:ui-monospace,Consolas,monospace;min-height:22px;font-size:.95rem}
+.info{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;list-style:none}
+.info li{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:6px 12px;font-size:.82rem;color:var(--muted)}
+.info b{color:var(--text)}
+.edge{stroke:var(--line);stroke-width:2}
+.nd circle{fill:var(--panel2);stroke:var(--accent);stroke-width:2.5;transition:fill .2s,stroke .2s}
+.nd text{fill:var(--text);font-size:15px;font-weight:600;text-anchor:middle;dominant-baseline:central;font-family:ui-monospace,Consolas,monospace}
+.nd.hl circle{fill:var(--accent);stroke:#fff}
+.nd.hl text{fill:#06101f}
+.nd.vis circle{fill:#27406b}
+.nd.ok circle{fill:var(--ok);stroke:#fff}
+.nd.ok text{fill:#06101f}
+.nd.cmp circle{fill:var(--warn);stroke:#fff}
+.nd.cmp text{fill:#06101f}
+.empty{fill:var(--muted);font-size:14px}
+.row{display:flex;align-items:center;gap:0;flex-wrap:nowrap}
+.cw{display:flex;flex-direction:column;align-items:center;gap:6px}
+.cell{min-width:44px;height:44px;padding:0 8px;display:flex;align-items:center;justify-content:center;background:var(--panel2);border:2px solid var(--line);border-radius:8px;font-family:ui-monospace,Consolas,monospace;font-weight:600;transition:.2s}
+.cell.hl{background:var(--accent);color:#06101f;border-color:#fff}
+.cell.cmp{background:var(--warn);color:#06101f;border-color:#fff}
+.cell.ok{background:var(--ok);color:#06101f;border-color:#fff}
+.cell.dim{opacity:.25}
+.cell.new{animation:pop .35s ease}
+@keyframes pop{from{transform:scale(.4);opacity:0}to{transform:none;opacity:1}}
+.idx{font-size:.72rem;color:var(--muted);min-height:14px;font-family:ui-monospace,Consolas,monospace}
+.tag{font-size:.75rem;color:var(--accent);min-height:16px;font-weight:700}
+.heap-wrap{display:flex;flex-direction:column;gap:16px;align-items:center;width:100%}
+.ll{display:flex;align-items:center}
+.ll .lab{color:var(--accent);font-weight:700;font-size:.85rem;padding:0 8px}
+.ll .arrow{color:var(--muted);padding:0 6px;font-size:1.2rem}
+.node{display:flex;border:2px solid var(--line);border-radius:8px;overflow:hidden;transition:.2s;background:var(--panel2)}
+.node .v{padding:10px 14px;font-family:ui-monospace,Consolas,monospace;font-weight:600;min-width:46px;text-align:center}
+.node .p{padding:10px 12px;border-left:2px solid var(--line);color:var(--muted);background:#10172d}
+.node.hl{border-color:#fff;background:var(--accent);color:#06101f}
+.node.ok{border-color:#fff;background:var(--ok);color:#06101f}
+.node.new{animation:pop .35s ease}
+.stack{display:flex;flex-direction:column-reverse;gap:6px;min-width:140px;align-items:stretch;border:2px solid var(--line);border-top:none;border-radius:0 0 12px 12px;padding:10px;min-height:60px}
+.stack .cell{width:100%}
+.queue{display:flex;gap:6px;align-items:center;border-top:2px solid var(--line);border-bottom:2px solid var(--line);padding:10px;min-height:68px;min-width:200px}
+.sw{display:flex;flex-direction:column;align-items:center;gap:8px}
+.bars{display:flex;align-items:flex-end;gap:3px;height:300px;width:100%}
+.bar{flex:1;background:linear-gradient(180deg,var(--accent),var(--accent2));border-radius:4px 4px 0 0;position:relative;min-width:3px;transition:background .1s}
+.bar span{position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:.7rem;color:var(--muted);font-family:ui-monospace,Consolas,monospace}
+.bar.cmp{background:var(--warn)}
+.bar.swp{background:var(--bad)}
+.bar.piv{background:var(--piv)}
+.bar.ok{background:var(--ok)}
+.stats{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap}
+.stats div{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:8px 14px;font-size:.85rem;color:var(--muted)}
+.stats b{color:var(--text);font-family:ui-monospace,Consolas,monospace}
+.legend{display:flex;gap:14px;margin-top:10px;font-size:.8rem;color:var(--muted);flex-wrap:wrap}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px}
+footer{max-width:1100px;margin:22px auto 0;padding:0 20px;color:var(--muted);font-size:.8rem;text-align:center}
+footer a{color:var(--accent);text-decoration:none}
+@media(max-width:600px){h1{font-size:1.3rem}.bars{height:220px}}
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>Estruturas de Dados <span>Visualizador</span></h1>
+    <p>Guilherme Macario · Ciência da Computação · UFCG</p>
+  </div>
+  <div class="speed">Velocidade <input id="speed" type="range" min="1" max="10" value="6"></div>
+</header>
+<nav id="tabs"></nav>
+<main>
+
+<section id="bst" data-title="BST">
+  <div class="controls">
+    <input type="number" id="bstIn" placeholder="valor">
+    <button class="primary" id="bstIns">Inserir</button>
+    <button id="bstDel">Remover</button>
+    <button id="bstFind">Buscar</button>
+    <button id="bstRand">Aleatório</button>
+    <button class="ghost" id="bstClear">Limpar</button>
+  </div>
+  <div class="controls">
+    <span class="lbl">Percursos:</span>
+    <button id="bstPre">Pré-ordem</button>
+    <button id="bstIn2">Em ordem</button>
+    <button id="bstPost">Pós-ordem</button>
+  </div>
+  <div class="msg"></div>
+  <div class="stage"><svg></svg></div>
+  <div class="out"></div>
+  <ul class="info"><li>Inserção <b>O(log n)</b> médio</li><li>Busca <b>O(log n)</b> médio</li><li>Pior caso <b>O(n)</b></li></ul>
+</section>
+
+<section id="heap" data-title="Heap">
+  <div class="controls">
+    <input type="number" id="heapIn" placeholder="valor">
+    <button class="primary" id="heapIns">Inserir</button>
+    <button id="heapExt">Extrair mínimo</button>
+    <button id="heapRand">Aleatório</button>
+    <button class="ghost" id="heapClear">Limpar</button>
+  </div>
+  <div class="msg"></div>
+  <div class="stage"><div class="heap-wrap"><svg></svg><div class="row" id="heapRow"></div></div></div>
+  <ul class="info"><li>Inserção <b>O(log n)</b></li><li>Extrair mínimo <b>O(log n)</b></li><li>Ver mínimo <b>O(1)</b></li></ul>
+</section>
+
+<section id="ll" data-title="Linked List">
+  <div class="controls">
+    <input type="number" id="llIn" placeholder="valor">
+    <button class="primary" id="llHead">Inserir no início</button>
+    <button id="llTail">Inserir no fim</button>
+    <button id="llDel">Remover</button>
+    <button id="llFind">Buscar</button>
+    <button class="ghost" id="llClear">Limpar</button>
+  </div>
+  <div class="msg"></div>
+  <div class="stage"><div class="ll" id="llRow"></div></div>
+  <ul class="info"><li>Inserir no início <b>O(1)</b></li><li>Buscar <b>O(n)</b></li><li>Remover <b>O(n)</b></li></ul>
+</section>
+
+<section id="stack" data-title="Stack">
+  <div class="controls">
+    <input type="number" id="stIn" placeholder="valor">
+    <button class="primary" id="stPush">Push</button>
+    <button id="stPop">Pop</button>
+    <button id="stPeek">Peek</button>
+    <button class="ghost" id="stClear">Limpar</button>
+  </div>
+  <div class="msg"></div>
+  <div class="stage"><div class="sw"><div class="tag" id="stTag"></div><div class="stack" id="stBox"></div></div></div>
+  <ul class="info"><li>LIFO: último a entrar, primeiro a sair</li><li>Push/Pop <b>O(1)</b></li></ul>
+</section>
+
+<section id="queue" data-title="Queue">
+  <div class="controls">
+    <input type="number" id="qIn" placeholder="valor">
+    <button class="primary" id="qEnq">Enqueue</button>
+    <button id="qDeq">Dequeue</button>
+    <button class="ghost" id="qClear">Limpar</button>
+  </div>
+  <div class="msg"></div>
+  <div class="stage"><div class="sw"><div class="queue" id="qBox"></div><div class="tag" id="qTag"></div></div></div>
+  <ul class="info"><li>FIFO: primeiro a entrar, primeiro a sair</li><li>Enqueue/Dequeue <b>O(1)</b></li></ul>
+</section>
+
+<section id="sort" data-title="Ordenação">
+  <div class="controls">
+    <select id="sortAlg">
+      <option value="bubble">Bubble Sort</option>
+      <option value="selection">Selection Sort</option>
+      <option value="insertion">Insertion Sort</option>
+      <option value="merge">Merge Sort</option>
+      <option value="quick">Quick Sort</option>
+    </select>
+    <span class="lbl">Tamanho</span>
+    <input type="range" id="sortN" min="8" max="60" value="24">
+    <button class="primary" id="sortGo">Ordenar</button>
+    <button id="sortStop">Parar</button>
+    <button id="sortShuffle">Embaralhar</button>
+  </div>
+  <div class="msg"></div>
+  <div class="stage"><div class="bars" id="bars"></div></div>
+  <div class="stats"><div>Comparações <b id="cCmp">0</b></div><div>Trocas/escritas <b id="cSwp">0</b></div><div id="cOrder">Complexidade <b>-</b></div></div>
+  <div class="legend"><span><i style="background:var(--warn)"></i>comparando</span><span><i style="background:var(--bad)"></i>trocando</span><span><i style="background:var(--piv)"></i>pivô</span><span><i style="background:var(--ok)"></i>ordenado</span></div>
+</section>
+
+<section id="bin" data-title="Busca Binária">
+  <div class="controls">
+    <input type="number" id="binIn" placeholder="alvo">
+    <button class="primary" id="binGo">Buscar</button>
+    <button id="binNew">Novo array</button>
+  </div>
+  <div class="msg"></div>
+  <div class="stage"><div class="row" id="binRow" style="flex-wrap:wrap;justify-content:center;gap:6px"></div></div>
+  <ul class="info"><li>Requer array <b>ordenado</b></li><li>Busca <b>O(log n)</b></li><li>Clique em uma célula para usá-la como alvo</li></ul>
+</section>
+
+</main>
+<footer>Visualização interativa das estruturas do repositório <a href="https://github.com/usguilherme/LabEstruturaDadosJava">LabEstruturaDadosJava</a></footer>
+
+<script>
+const $ = (s, r = document) => r.querySelector(s);
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const DELAYS = [900, 650, 480, 350, 260, 180, 120, 70, 35, 12];
+const delay = () => DELAYS[$('#speed').value - 1];
+const say = (sec, t) => { $('.msg', sec).textContent = t || ''; };
+const div = (cls, text) => { const d = document.createElement('div'); d.className = cls || ''; if (text !== undefined) d.textContent = text; return d; };
+const makeAct = () => { let busy = false; return async fn => { if (busy) return; busy = true; try { await fn(); } finally { busy = false; } }; };
+const rnd = (a, b) => Math.floor(Math.random() * (b - a + 1)) + a;
+const readInt = (inp, sec) => {
+  const v = parseInt(inp.value, 10);
+  inp.value = '';
+  inp.focus();
+  if (Number.isNaN(v)) { say(sec, 'Digite um número inteiro.'); return null; }
+  return v;
+};
+const onEnter = (inp, btn) => inp.addEventListener('keydown', e => { if (e.key === 'Enter') btn.click(); });
+
+const tabs = $('#tabs');
+document.querySelectorAll('main section').forEach((s, i) => {
+  const b = document.createElement('button');
+  b.textContent = s.dataset.title;
+  b.onclick = () => {
+    document.querySelectorAll('main section').forEach(x => x.classList.remove('on'));
+    tabs.querySelectorAll('button').forEach(x => x.classList.remove('on'));
+    s.classList.add('on');
+    b.classList.add('on');
+  };
+  tabs.append(b);
+  if (i === 0) b.click();
+});
+
+function layout(root) {
+  let i = 0;
+  const pts = [];
+  const walk = (n, d) => {
+    if (!n) return;
+    walk(n.l, d + 1);
+    n.x = i++;
+    n.y = d;
+    pts.push(n);
+    walk(n.r, d + 1);
+  };
+  walk(root, 0);
+  return pts;
+}
+
+function drawTree(svg, root, marks = {}) {
+  svg.innerHTML = '';
+  const NS = 'http://www.w3.org/2000/svg';
+  if (!root) {
+    svg.setAttribute('viewBox', '0 0 300 80');
+    svg.style.width = '300px';
+    svg.style.height = '80px';
+    const t = document.createElementNS(NS, 'text');
+    t.setAttribute('x', 150);
+    t.setAttribute('y', 45);
+    t.setAttribute('text-anchor', 'middle');
+    t.setAttribute('class', 'empty');
+    t.textContent = 'Vazia';
+    svg.append(t);
+    return;
+  }
+  const pts = layout(root);
+  const dx = 54, dy = 72, r = 20;
+  const maxD = Math.max(...pts.map(p => p.y));
+  const W = (pts.length + 1) * dx;
+  const H = (maxD + 1) * dy + 20;
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  svg.style.width = W + 'px';
+  svg.style.height = H + 'px';
+  const px = n => n.x * dx + dx;
+  const py = n => n.y * dy + 34;
+  pts.forEach(n => {
+    [n.l, n.r].forEach(c => {
+      if (!c) return;
+      const l = document.createElementNS(NS, 'line');
+      l.setAttribute('x1', px(n));
+      l.setAttribute('y1', py(n));
+      l.setAttribute('x2', px(c));
+      l.setAttribute('y2', py(c));
+      l.setAttribute('class', 'edge');
+      svg.append(l);
+    });
+  });
+  pts.forEach(n => {
+    const id = n.id !== undefined ? n.id : n.v;
+    const g = document.createElementNS(NS, 'g');
+    g.setAttribute('class', 'nd ' + (marks[id] || ''));
+    const c = document.createElementNS(NS, 'circle');
+    c.setAttribute('cx', px(n));
+    c.setAttribute('cy', py(n));
+    c.setAttribute('r', r);
+    const t = document.createElementNS(NS, 'text');
+    t.setAttribute('x', px(n));
+    t.setAttribute('y', py(n));
+    t.textContent = n.v;
+    g.append(c, t);
+    svg.append(g);
+  });
+}
+
+(() => {
+  const sec = $('#bst'), svg = $('svg', sec), inp = $('#bstIn'), out = $('.out', sec);
+  const act = makeAct();
+  let root = null;
+  const draw = (m = {}) => drawTree(svg, root, m);
+  const insertInstant = v => {
+    if (!root) { root = { v, l: null, r: null }; return; }
+    let n = root;
+    while (true) {
+      if (v === n.v) return;
+      const k = v < n.v ? 'l' : 'r';
+      if (!n[k]) { n[k] = { v, l: null, r: null }; return; }
+      n = n[k];
+    }
+  };
+  const minNode = n => { while (n.l) n = n.l; return n; };
+  const remove = (n, v) => {
+    if (!n) return null;
+    if (v < n.v) n.l = remove(n.l, v);
+    else if (v > n.v) n.r = remove(n.r, v);
+    else {
+      if (!n.l) return n.r;
+      if (!n.r) return n.l;
+      const m = minNode(n.r);
+      n.v = m.v;
+      n.r = remove(n.r, m.v);
+    }
+    return n;
+  };
+  const path = async v => {
+    let n = root;
+    const vis = {};
+    while (n) {
+      vis[n.v] = 'hl';
+      draw(vis);
+      await sleep(delay());
+      if (v === n.v) return n;
+      say(sec, `${v} ${v < n.v ? '<' : '>'} ${n.v}: segue para a ${v < n.v ? 'esquerda' : 'direita'}.`);
+      vis[n.v] = 'vis';
+      n = v < n.v ? n.l : n.r;
+    }
+    draw(vis);
+    await sleep(delay());
+    return null;
+  };
+  const insert = async v => {
+    if (!root) {
+      root = { v, l: null, r: null };
+      draw({ [v]: 'ok' });
+      say(sec, `${v} é a raiz.`);
+      return;
+    }
+    let n = root;
+    const vis = {};
+    while (true) {
+      vis[n.v] = 'hl';
+      draw(vis);
+      await sleep(delay());
+      if (v === n.v) { say(sec, `${v} já existe.`); draw(); return; }
+      say(sec, `${v} ${v < n.v ? '<' : '>'} ${n.v}: segue para a ${v < n.v ? 'esquerda' : 'direita'}.`);
+      vis[n.v] = 'vis';
+      const k = v < n.v ? 'l' : 'r';
+      if (!n[k]) {
+        n[k] = { v, l: null, r: null };
+        draw({ ...vis, [v]: 'ok' });
+        await sleep(delay());
+        draw();
+        say(sec, `${v} inserido.`);
+        return;
+      }
+      n = n[k];
+    }
+  };
+  const order = kind => {
+    const r = [];
+    const w = n => {
+      if (!n) return;
+      if (kind === 'pre') r.push(n.v);
+      w(n.l);
+      if (kind === 'in') r.push(n.v);
+      w(n.r);
+      if (kind === 'post') r.push(n.v);
+    };
+    w(root);
+    return r;
+  };
+  const names = { pre: 'Pré-ordem', in: 'Em ordem', post: 'Pós-ordem' };
+  const trav = async kind => {
+    if (!root) { say(sec, 'A árvore está vazia.'); return; }
+    const o = order(kind), vis = {}, done = [];
+    say(sec, names[kind]);
+    for (const v of o) {
+      vis[v] = 'hl';
+      draw(vis);
+      done.push(v);
+      out.textContent = done.join(' → ');
+      await sleep(delay());
+      vis[v] = 'vis';
+    }
+    draw(vis);
+    await sleep(delay() * 2);
+    draw();
+  };
+  [8, 3, 10, 1, 6, 14, 4, 7].forEach(insertInstant);
+  draw();
+  $('#bstIns').onclick = () => act(async () => { const v = readInt(inp, sec); if (v !== null) { out.textContent = ''; await insert(v); } });
+  $('#bstFind').onclick = () => act(async () => {
+    const v = readInt(inp, sec);
+    if (v === null) return;
+    out.textContent = '';
+    const n = await path(v);
+    if (n) { draw({ [v]: 'ok' }); say(sec, `${v} encontrado.`); }
+    else { draw(); say(sec, `${v} não está na árvore.`); }
+  });
+  $('#bstDel').onclick = () => act(async () => {
+    const v = readInt(inp, sec);
+    if (v === null) return;
+    out.textContent = '';
+    const n = await path(v);
+    if (!n) { draw(); say(sec, `${v} não está na árvore.`); return; }
+    root = remove(root, v);
+    draw();
+    say(sec, `${v} removido.`);
+  });
+  $('#bstRand').onclick = () => act(async () => { out.textContent = ''; await insert(rnd(1, 99)); });
+  $('#bstClear').onclick = () => act(async () => { root = null; out.textContent = ''; say(sec, ''); draw(); });
+  $('#bstPre').onclick = () => act(() => trav('pre'));
+  $('#bstIn2').onclick = () => act(() => trav('in'));
+  $('#bstPost').onclick = () => act(() => trav('post'));
+  onEnter(inp, $('#bstIns'));
+})();
+
+(() => {
+  const sec = $('#heap'), svg = $('svg', sec), inp = $('#heapIn'), row = $('#heapRow');
+  const act = makeAct();
+  const arr = [];
+  const mk = i => i >= arr.length ? null : { v: arr[i], id: i, l: mk(2 * i + 1), r: mk(2 * i + 2) };
+  const draw = (m = {}) => {
+    drawTree(svg, mk(0), m);
+    row.innerHTML = '';
+    row.style.gap = '6px';
+    arr.forEach((v, i) => {
+      const w = div('cw');
+      w.append(div('cell ' + (m[i] || ''), v), div('idx', i));
+      row.append(w);
+    });
+  };
+  const instant = v => {
+    arr.push(v);
+    let i = arr.length - 1;
+    while (i > 0) {
+      const p = (i - 1) >> 1;
+      if (arr[p] <= arr[i]) break;
+      [arr[p], arr[i]] = [arr[i], arr[p]];
+      i = p;
+    }
+  };
+  const insert = async v => {
+    arr.push(v);
+    let i = arr.length - 1;
+    draw({ [i]: 'hl' });
+    say(sec, `${v} entra no fim e sobe se for menor que o pai.`);
+    await sleep(delay());
+    while (i > 0) {
+      const p = (i - 1) >> 1;
+      draw({ [i]: 'hl', [p]: 'cmp' });
+      await sleep(delay());
+      if (arr[p] > arr[i]) {
+        [arr[p], arr[i]] = [arr[i], arr[p]];
+        i = p;
+        draw({ [i]: 'hl' });
+        await sleep(delay());
+      } else break;
+    }
+    draw({ [i]: 'ok' });
+    await sleep(delay());
+    draw();
+    say(sec, `${v} inserido.`);
+  };
+  const extract = async () => {
+    if (!arr.length) { say(sec, 'O heap está vazio.'); return; }
+    const min = arr[0];
+    draw({ 0: 'ok' });
+    await sleep(delay());
+    const last = arr.pop();
+    if (arr.length) {
+      arr[0] = last;
+      let i = 0;
+      say(sec, 'O último elemento vai para a raiz e desce.');
+      while (true) {
+        const l = 2 * i + 1, r = 2 * i + 2;
+        let s = i;
+        if (l < arr.length && arr[l] < arr[s]) s = l;
+        if (r < arr.length && arr[r] < arr[s]) s = r;
+        draw({ [i]: 'hl', [l]: 'cmp', [r]: 'cmp' });
+        await sleep(delay());
+        if (s === i) break;
+        [arr[s], arr[i]] = [arr[i], arr[s]];
+        i = s;
+      }
+    }
+    draw();
+    say(sec, `Mínimo removido: ${min}.`);
+  };
+  [3, 7, 5, 12, 9, 8, 6].forEach(instant);
+  draw();
+  $('#heapIns').onclick = () => act(async () => { const v = readInt(inp, sec); if (v !== null) await insert(v); });
+  $('#heapExt').onclick = () => act(extract);
+  $('#heapRand').onclick = () => act(() => insert(rnd(1, 99)));
+  $('#heapClear').onclick = () => act(async () => { arr.length = 0; say(sec, ''); draw(); });
+  onEnter(inp, $('#heapIns'));
+})();
+
+(() => {
+  const sec = $('#ll'), inp = $('#llIn'), row = $('#llRow');
+  const act = makeAct();
+  const items = [10, 20, 30];
+  const draw = (m = {}, fresh = -1) => {
+    row.innerHTML = '';
+    const head = div('lab', 'head');
+    row.append(head);
+    items.forEach((v, i) => {
+      const a = div('arrow', '→');
+      row.append(a);
+      const n = div('node ' + (m[i] || '') + (i === fresh ? ' new' : ''));
+      n.append(div('v', v), div('p', '•'));
+      row.append(n);
+    });
+    row.append(div('arrow', '→'), div('lab', 'null'));
+  };
+  const walk = async (v, stopAtFound) => {
+    for (let i = 0; i < items.length; i++) {
+      draw({ [i]: 'hl' });
+      await sleep(delay());
+      if (stopAtFound && items[i] === v) return i;
+    }
+    return -1;
+  };
+  draw();
+  $('#llHead').onclick = () => act(async () => {
+    const v = readInt(inp, sec);
+    if (v === null) return;
+    items.unshift(v);
+    draw({ 0: 'ok' }, 0);
+    say(sec, `${v} é a nova cabeça da lista.`);
+  });
+  $('#llTail').onclick = () => act(async () => {
+    const v = readInt(inp, sec);
+    if (v === null) return;
+    say(sec, 'Percorre até o último nó.');
+    await walk(v, false);
+    items.push(v);
+    draw({ [items.length - 1]: 'ok' }, items.length - 1);
+    say(sec, `${v} inserido no fim.`);
+  });
+  $('#llFind').onclick = () => act(async () => {
+    const v = readInt(inp, sec);
+    if (v === null) return;
+    const i = await walk(v, true);
+    if (i >= 0) { draw({ [i]: 'ok' }); say(sec, `${v} encontrado na posição ${i}.`); }
+    else { draw(); say(sec, `${v} não está na lista.`); }
+  });
+  $('#llDel').onclick = () => act(async () => {
+    const v = readInt(inp, sec);
+    if (v === null) return;
+    const i = await walk(v, true);
+    if (i < 0) { draw(); say(sec, `${v} não está na lista.`); return; }
+    items.splice(i, 1);
+    draw();
+    say(sec, `${v} removido.`);
+  });
+  $('#llClear').onclick = () => act(async () => { items.length = 0; say(sec, ''); draw(); });
+  onEnter(inp, $('#llHead'));
+})();
+
+(() => {
+  const sec = $('#stack'), inp = $('#stIn'), box = $('#stBox'), tag = $('#stTag');
+  const act = makeAct();
+  const items = [1, 2, 3];
+  const draw = (fresh = false, peek = false) => {
+    box.innerHTML = '';
+    items.forEach((v, i) => {
+      const top = i === items.length - 1;
+      box.append(div('cell' + (top && fresh ? ' new' : '') + (top && peek ? ' ok' : ''), v));
+    });
+    tag.textContent = items.length ? '↓ topo' : '';
+  };
+  draw();
+  $('#stPush').onclick = () => act(async () => {
+    const v = readInt(inp, sec);
+    if (v === null) return;
+    items.push(v);
+    draw(true);
+    say(sec, `push(${v})`);
+  });
+  $('#stPop').onclick = () => act(async () => {
+    if (!items.length) { say(sec, 'Pilha vazia.'); return; }
+    const v = items.pop();
+    draw();
+    say(sec, `pop() → ${v}`);
+  });
+  $('#stPeek').onclick = () => act(async () => {
+    if (!items.length) { say(sec, 'Pilha vazia.'); return; }
+    draw(false, true);
+    say(sec, `peek() → ${items[items.length - 1]}`);
+    await sleep(delay() * 2);
+    draw();
+  });
+  $('#stClear').onclick = () => act(async () => { items.length = 0; say(sec, ''); draw(); });
+  onEnter(inp, $('#stPush'));
+})();
+
+(() => {
+  const sec = $('#queue'), inp = $('#qIn'), box = $('#qBox'), tag = $('#qTag');
+  const act = makeAct();
+  const items = [1, 2, 3];
+  const draw = fresh => {
+    box.innerHTML = '';
+    items.forEach((v, i) => box.append(div('cell' + (fresh && i === items.length - 1 ? ' new' : ''), v)));
+    tag.textContent = items.length ? '↑ início (sai primeiro)      fim (entra) ↑' : '';
+  };
+  draw();
+  $('#qEnq').onclick = () => act(async () => {
+    const v = readInt(inp, sec);
+    if (v === null) return;
+    items.push(v);
+    draw(true);
+    say(sec, `enqueue(${v})`);
+  });
+  $('#qDeq').onclick = () => act(async () => {
+    if (!items.length) { say(sec, 'Fila vazia.'); return; }
+    const v = items.shift();
+    draw();
+    say(sec, `dequeue() → ${v}`);
+  });
+  $('#qClear').onclick = () => act(async () => { items.length = 0; say(sec, ''); draw(); });
+  onEnter(inp, $('#qEnq'));
+})();
+
+(() => {
+  const sec = $('#sort'), bars = $('#bars');
+  const cCmp = $('#cCmp'), cSwp = $('#cSwp'), cOrder = $('#cOrder');
+  let data = [], token = 0, cmps = 0, swps = 0;
+  const complexity = {
+    bubble: 'O(n²)',
+    selection: 'O(n²)',
+    insertion: 'O(n²)',
+    merge: 'O(n log n)',
+    quick: 'O(n log n) médio'
+  };
+  const fresh = () => {
+    const n = +$('#sortN').value;
+    const a = Array.from({ length: n }, (_, i) => i + 1);
+    for (let i = n - 1; i > 0; i--) { const j = rnd(0, i); [a[i], a[j]] = [a[j], a[i]]; }
+    return a;
+  };
+  const draw = (a, m = {}) => {
+    bars.innerHTML = '';
+    const max = Math.max(...a, 1);
+    a.forEach((v, i) => {
+      const b = div('bar ' + (m[i] || ''));
+      b.style.height = (v / max * 100) + '%';
+      if (a.length <= 28) { const s = document.createElement('span'); s.textContent = v; b.append(s); }
+      bars.append(b);
+    });
+  };
+  const stats = () => { cCmp.textContent = cmps; cSwp.textContent = swps; };
+  const reset = () => { token++; cmps = 0; swps = 0; stats(); data = fresh(); draw(data); say(sec, ''); };
+  const showOrder = () => { cOrder.innerHTML = `Complexidade <b>${complexity[$('#sortAlg').value]}</b>`; };
+
+  const run = async () => {
+    const my = ++token;
+    cmps = 0; swps = 0; stats(); say(sec, '');
+    const a = data;
+    const tick = async m => {
+      if (my !== token) throw new Error('stop');
+      draw(a, m);
+      stats();
+      await sleep(delay());
+      if (my !== token) throw new Error('stop');
+    };
+    const less = async (i, j) => { cmps++; await tick({ [i]: 'cmp', [j]: 'cmp' }); return a[i] < a[j]; };
+    const swap = async (i, j) => {
+      if (i === j) return;
+      swps++;
+      [a[i], a[j]] = [a[j], a[i]];
+      await tick({ [i]: 'swp', [j]: 'swp' });
+    };
+    const algos = {
+      async bubble() {
+        const n = a.length;
+        for (let i = 0; i < n - 1; i++) {
+          let changed = false;
+          for (let j = 0; j < n - i - 1; j++) {
+            if (await less(j + 1, j)) { await swap(j, j + 1); changed = true; }
+          }
+          if (!changed) break;
+        }
+      },
+      async selection() {
+        const n = a.length;
+        for (let i = 0; i < n - 1; i++) {
+          let m = i;
+          for (let j = i + 1; j < n; j++) if (await less(j, m)) m = j;
+          await swap(i, m);
+        }
+      },
+      async insertion() {
+        for (let i = 1; i < a.length; i++) {
+          let j = i;
+          while (j > 0 && await less(j, j - 1)) { await swap(j, j - 1); j--; }
+        }
+      },
+      async merge() {
+        const merge = async (l, m, r) => {
+          const L = a.slice(l, m + 1), R = a.slice(m + 1, r + 1);
+          let i = 0, j = 0, k = l;
+          while (i < L.length && j < R.length) {
+            cmps++;
+            await tick({ [l + i]: 'cmp', [m + 1 + j]: 'cmp' });
+            if (L[i] <= R[j]) a[k++] = L[i++]; else a[k++] = R[j++];
+            swps++;
+            await tick({ [k - 1]: 'swp' });
+          }
+          while (i < L.length) { a[k++] = L[i++]; swps++; await tick({ [k - 1]: 'swp' }); }
+          while (j < R.length) { a[k++] = R[j++]; swps++; await tick({ [k - 1]: 'swp' }); }
+        };
+        const sort = async (l, r) => {
+          if (l >= r) return;
+          const m = (l + r) >> 1;
+          await sort(l, m);
+          await sort(m + 1, r);
+          await merge(l, m, r);
+        };
+        await sort(0, a.length - 1);
+      },
+      async quick() {
+        const sort = async (l, r) => {
+          if (l >= r) return;
+          let i = l;
+          for (let j = l; j < r; j++) {
+            cmps++;
+            await tick({ [j]: 'cmp', [r]: 'piv' });
+            if (a[j] < a[r]) { await swap(i, j); i++; }
+          }
+          await swap(i, r);
+          await sort(l, i - 1);
+          await sort(i + 1, r);
+        };
+        await sort(0, a.length - 1);
+      }
+    };
+    try {
+      await algos[$('#sortAlg').value]();
+      const all = {};
+      a.forEach((_, i) => all[i] = 'ok');
+      draw(a, all);
+      stats();
+      say(sec, 'Ordenado.');
+    } catch (e) {
+      if (e.message !== 'stop') throw e;
+    }
+  };
+
+  $('#sortGo').onclick = run;
+  $('#sortStop').onclick = () => { token++; say(sec, 'Interrompido.'); };
+  $('#sortShuffle').onclick = reset;
+  $('#sortN').oninput = reset;
+  $('#sortAlg').onchange = () => { showOrder(); reset(); };
+  showOrder();
+  reset();
+})();
+
+(() => {
+  const sec = $('#bin'), row = $('#binRow'), inp = $('#binIn');
+  const act = makeAct();
+  let arr = [];
+  const make = () => {
+    const s = new Set();
+    while (s.size < 16) s.add(rnd(1, 99));
+    arr = [...s].sort((a, b) => a - b);
+  };
+  const draw = (lo = 0, hi = arr.length - 1, mid = -1, found = -1) => {
+    row.innerHTML = '';
+    arr.forEach((v, i) => {
+      const w = div('cw');
+      let cls = 'cell';
+      if (i < lo || i > hi) cls += ' dim';
+      if (i === mid) cls += ' cmp';
+      if (i === found) cls += ' ok';
+      const c = div(cls, v);
+      c.style.cursor = 'pointer';
+      c.onclick = () => { inp.value = v; };
+      const t = [];
+      if (i === lo) t.push('L');
+      if (i === mid) t.push('M');
+      if (i === hi) t.push('H');
+      w.append(div('tag', t.join('·')), c, div('idx', i));
+      row.append(w);
+    });
+  };
+  const search = async target => {
+    let lo = 0, hi = arr.length - 1, steps = 0;
+    while (lo <= hi) {
+      const mid = (lo + hi) >> 1;
+      steps++;
+      draw(lo, hi, mid);
+      say(sec, `Passo ${steps}: meio = ${arr[mid]}. Alvo ${target} ${target === arr[mid] ? '=' : target < arr[mid] ? '<' : '>'} ${arr[mid]}.`);
+      await sleep(delay() * 2);
+      if (arr[mid] === target) {
+        draw(lo, hi, mid, mid);
+        say(sec, `Encontrado ${target} na posição ${mid} em ${steps} passo(s).`);
+        return;
+      }
+      if (arr[mid] < target) lo = mid + 1; else hi = mid - 1;
+    }
+    draw(0, -1);
+    say(sec, `${target} não está no array (${steps} passo(s)).`);
+  };
+  make();
+  draw();
+  $('#binGo').onclick = () => act(async () => { const v = readInt(inp, sec); if (v !== null) await search(v); });
+  $('#binNew').onclick = () => act(async () => { make(); say(sec, ''); draw(); });
+  onEnter(inp, $('#binGo'));
+})();
+</script>
+</body>
+</html>
