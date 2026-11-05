@@ -9,6 +9,8 @@ Implementações próprias de estruturas de dados e algoritmos clássicos, desen
 ![Estruturas](https://img.shields.io/badge/Estruturas%20de%20Dados-7-blue?style=for-the-badge)
 ![Ordenação](https://img.shields.io/badge/Algoritmos%20de%20Ordena%C3%A7%C3%A3o-5-success?style=for-the-badge)
 
+### 🔗 [Abrir visualizador interativo](https://usguilherme.github.io/LabEstruturaDadosJava/)
+
 </div>
 
 ---
@@ -67,26 +69,29 @@ graph TD
 
 ## 🔗 Linked List
 
+Cada nó guarda um valor e a referência para o próximo.
+
 ```mermaid
 flowchart LR
-    HEAD([head]) --> A[10 | •] --> B[20 | •] --> C[30 | •] --> NULL([null])
+    HEAD([head]) --> A["10"] --> B["20"] --> C["30"] --> NULL([null])
 ```
 
-## 📚 Stack (LIFO) e 🚶 Queue (FIFO)
+## 📚 Stack (LIFO)
+
+O último elemento a entrar é o primeiro a sair.
+
+```mermaid
+flowchart TB
+    T3["3 (topo)"] --- T2["2"] --- T1["1"]
+```
+
+## 🚶 Queue (FIFO)
+
+O primeiro elemento a entrar é o primeiro a sair.
 
 ```mermaid
 flowchart LR
-    subgraph Stack
-        direction TB
-        T3[3 ← topo]
-        T2[2]
-        T1[1]
-        T3 --- T2 --- T1
-    end
-    subgraph Queue
-        direction LR
-        F[início → 1] --- Q2[2] --- Q3[3 ← fim]
-    end
+    F["1 (início)"] --- Q2["2"] --- Q3["3 (fim)"]
 ```
 
 ## 🔍 Busca Binária
@@ -125,22 +130,6 @@ flowchart TD
 | **Merge Sort** | O(n log n) | O(n log n) | O(n log n) | ✅ |
 | **Quick Sort** | O(n log n) | O(n log n) | O(n²) | ❌ |
 
-```mermaid
-quadrantChart
-    title Ordenação: velocidade x simplicidade
-    x-axis Mais simples --> Mais sofisticado
-    y-axis Mais lento --> Mais rápido
-    quadrant-1 Rápido e sofisticado
-    quadrant-2 Rápido e simples
-    quadrant-3 Lento e simples
-    quadrant-4 Lento e sofisticado
-    Bubble Sort: [0.12, 0.12]
-    Selection Sort: [0.2, 0.18]
-    Insertion Sort: [0.3, 0.3]
-    Merge Sort: [0.78, 0.85]
-    Quick Sort: [0.85, 0.9]
-```
-
 ---
 
 ## 📁 Estrutura
@@ -153,7 +142,8 @@ LabEstruturaDadosJava
 ├── linkedList
 ├── queue
 ├── sorting
-└── stack
+├── stack
+└── index.html
 ```
 
 ---
